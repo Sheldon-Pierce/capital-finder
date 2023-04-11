@@ -19,6 +19,16 @@ class handler(BaseHTTPRequestHandler):
                 definitions.append(definition)
             message = str(f"The capital of {dic['country']} is {definitions[0]}")
 
+        elif "capital" in dic:
+            url = "https://restcountries.com/v3.1/name/"
+            r = requests.get(url + dic["capital"])
+            data = r.json()
+            definitions = []
+            for word_data in data:
+                definition = word_data
+                definitions.append(definition)
+            message = str('X is the capital of Y')
+
         else:
             message = "Give me a word to define please"
 
