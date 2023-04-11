@@ -4,36 +4,23 @@ import requests
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        args = requests.args
+        s = self.path
+        url_components = parse.urlsplit(s)
+        query_string_list = parse.parse_qsl(url_components.query)
+        dic = dict(query_string_list)
 
-        if 'country' in args:
-            country = args['country']
-            url = f'https://restcountries.com/v3.1/name/{country}?fullText=true&fields=name,capital'
-
-            response = requests.get(url)
-
-            if response.status_code == 200:
-                data = response.json()
-                capital = data[0]['capital'][0]
-                return f"The capital of {country} is {capital}."
-            else:
-                return 'Failed to retrieve data.'
-
-        elif 'capital' in args:
-            capital = args['capital']
-            url = f'https://restcountries.com/v3.1/capital/{capital}?fields=name,capital'
-
-            response = requests.get(url)
-
-            if response.status_code == 200:
-                data = response.json()
-                country = data[0]['name']['common']
-                return f"{capital} is the capital of {country}."
-            else:
-                return 'Failed to retrieve data.'
+        if "country" in dic:
+            url = "https://restcountries.com/v3.1/name/"
+            r = requests.get(url + dic["country"])
+            data = r.json()
+            definitions = []
+            for word_data in data:
+                definition = word_data
+                definitions.append(definition)
+            message = str(definitions)
 
         else:
-            return 'Invalid request.'
+            message = "Give me a word to define please"
 
         self.send_response(200)
         self.send_header('Content-type','text/plain')
